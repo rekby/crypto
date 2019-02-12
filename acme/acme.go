@@ -755,6 +755,7 @@ func (c *Client) fetchNonce(ctx context.Context, url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	r = r.WithContext(ctx)
 	resp, err := c.doNoRetry(ctx, r)
 	if err != nil {
 		return "", err

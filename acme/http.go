@@ -133,6 +133,7 @@ func (c *Client) get(ctx context.Context, url string, ok resOkay) (*http.Respons
 		if err != nil {
 			return nil, err
 		}
+		req = req.WithContext(ctx)
 		res, err := c.doNoRetry(ctx, req)
 		switch {
 		case err != nil:
@@ -209,6 +210,7 @@ func (c *Client) postNoRetry(ctx context.Context, key crypto.Signer, url string,
 		return nil, nil, err
 	}
 	req.Header.Set("Content-Type", "application/jose+json")
+	req = req.WithContext(ctx)
 	res, err := c.doNoRetry(ctx, req)
 	if err != nil {
 		return nil, nil, err
@@ -219,7 +221,7 @@ func (c *Client) postNoRetry(ctx context.Context, key crypto.Signer, url string,
 
 // doNoRetry issues a request req, replacing its context (if any) with ctx.
 func (c *Client) doNoRetry(ctx context.Context, req *http.Request) (*http.Response, error) {
-	res, err := c.httpClient().Do(req.WithContext(ctx))
+	res, err := c.httpClient().Do(req)
 	if err != nil {
 		select {
 		case <-ctx.Done():
